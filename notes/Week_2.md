@@ -24,7 +24,7 @@
 ###  梯度下降算法
 + 算法实质与一元线性回归一致，表达形式近乎一致：</br>
 	<img src="https://raw.githubusercontent.com/Jack-CHEN-sci/Machine-Learning-Andrew/master/notes/img/multiple_features_GDAlgo.png" width = 60% />
-	+ 累加的是m个训练样本（特征向量）在当前预测函数h(x)下的预测值与实际值之差的平方对第j个变量（特征）的导数
-	+ 全部n+1个参数theta计算完成后更新
+	+ 对于参数theta_j的计算：累加的是m个训练样本（特征向量）在当前预测函数h(x)下的预测值与实际值之差的平方和对第j个变量（特征）的导数
+	+ 全部n+1个参数 theta_0, theta_1, ... , theta_n 计算完成后再更新
 + 将其各项逐个写出即为：</br>
 	<img src="https://raw.githubusercontent.com/Jack-CHEN-sci/Machine-Learning-Andrew/master/notes/img/multiple_features_GDAlgo(1).png" width = 45% />
