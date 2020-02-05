@@ -33,7 +33,7 @@
 #### 特征缩放
 + 将输入的数值规范为同样大小的规模，避免梯度下降过程中的反复震荡</br>
 + 将输入值除以输入变量的范围(即最大值减去最小值)，得到的新范围在-1到1之间。
-<img src="https://raw.githubusercontent.com/Jack-CHEN-sci/Machine-Learning-Andrew/master/notes/img/feature_scaling.png" width = 90% />
+<img src="https://raw.githubusercontent.com/Jack-CHEN-sci/Machine-Learning-Andrew/master/notes/img/feature_scaling.png" width = 90% /></br>
 + 作用：通过减少梯度下降的迭代次数从而起到加速作用
 	+ 注：不能解决梯度下降陷入局部最优解的问题
 #### 均值归一化
@@ -79,7 +79,7 @@
 	+ 函数pinv()：pseudo-inverse 伪逆（一般使用此函数可以得到想求的theta）
 	+ 函数inv()：inverse 逆
 + 什么情况下X^T*X不可逆？
-	1. 存在冗余特征（线性相关的）
+	1. 存在冗余特征（特征之间存在线性关系）
 		+ 例如：在预测房价时，特征x_1为房子的面积，单位为feet^2，特征x_2为房子的面积，单位为m^2
 		+ 因为1m = 3.28feet，故x_1 将恒等于 (3.28)^2 * x_2
 	2. 过量特征（e.g. 样本数量 ≤ 特征数量）
