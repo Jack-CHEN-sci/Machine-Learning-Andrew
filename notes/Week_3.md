@@ -41,11 +41,11 @@
 ### 代价函数（Cost Function）
 + 线性回归的代价函数在分类问题中并不适用
 	+ 因为 1）分类问题中假设函数h(x)的形式很复杂； 2）我们对每一次预测产生的代价cost(h(x),y)的定义为预测与真实标签值之差的平方，平方之后无疑使得整个代价函数更为复杂
-	<div align=center><img src="https://raw.githubusercontent.com/Jack-CHEN-sci/Machine-Learning-Andrew/master/notes/img/cost_redefine.png" width = 40% /></div>
+	+ <div align=center><img src="https://raw.githubusercontent.com/Jack-CHEN-sci/Machine-Learning-Andrew/master/notes/img/cost_redefine.png" width = 40% /></div>
 	+ 事实上，若沿用线性回归的“均方误差”代价函数，则会导致代价函数J(θ)“非凸”（non-convex）
 	<div align=center><img src="https://raw.githubusercontent.com/Jack-CHEN-sci/Machine-Learning-Andrew/master/notes/img/convex_vs_nonconvex.png" width = 70% /></div>
 + 定义适用于逻辑回归的预测代价
-	<div align=center><img src="https://raw.githubusercontent.com/Jack-CHEN-sci/Machine-Learning-Andrew/master/notes/img/cost_of_classification.png" width = 60% /></div>
+	+ <div align=center><img src="https://raw.githubusercontent.com/Jack-CHEN-sci/Machine-Learning-Andrew/master/notes/img/cost_of_classification.png" width = 60% /></div>
 	+ 通过观察图像理解函数意义
 		+ 当实际标签值y=1时：
 			+ 若预测值 h(x) -> 0，则代价 cost -> ∞.（预测失误）
