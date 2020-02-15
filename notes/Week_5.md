@@ -57,3 +57,75 @@
 			<div align=center><img src="https://raw.githubusercontent.com/Jack-CHEN-sci/Machine-Learning-Andrew/master/notes/img/backpropagation_deltaCap_compute.png" width=30%></div>
 	+ 计算代价函数对参数矩阵的偏导数
 		+ 矩阵 ***D^(l)*** 用作“累加器”，在计算的过程中把各个分部结果累加起来，最终计算出我们所求的偏导数
+
+### 反向传播算法实践
+
+#### 实现细节：参数展开（Unrolling Parameters）
++ 不同于线性回归和逻辑回归，当我们使用神经网络时，参数的数学组织形式不再是向量，而是矩阵
+	+ *** Θ^(1), Θ^(2), Θ^(3), ... ***
+	+ *** D^(1), D^(2), D^(3), ... ***
++ 为了能够使用 ***fminunc()*** 等高级优化算法，我们需要将以上矩阵“展开”成向量。例如，在Octave/MATLAB中使用以下命令：
+	```
+	thetaVector = [ Theta1(:); Theta2(:); Theta3(:); ]
+	deltaVector = [ D1(:); D2(:); D3(:) ]
+	```
++ 从“展开”后的向量变回矩阵（假设原矩阵Theta1的大小为10x11, Theta2的大小为10x11，Theta3的大小为1x11）：
+	```
+	Theta1 = reshape(thetaVector(1:110),10,11)
+	Theta2 = reshape(thetaVector(111:220),10,11)
+	Theta3 = reshape(thetaVector(221:231),1,11)
+	```
++ 小节：
+	<div align=center><img src="img/unroll_parameters.png" width=60%></div>
+
+#### 实现细节：梯度检查（gradient checking）
++ 作用：检查神经网络反向传播算法的正确性 —— 是否正确计算梯度
++ 由梯度的几何意义（切线），代价函数J(Θ)对特定参数Θ的偏导数可以计算如下：
+	+ 当只有一个参数矩阵时：
+	<div align=center><img src="img/derivative_approximation.png" width=35%></div>
+	+ 当有多个参数矩阵时，对Θ_j的偏导数：
+	<div align=center><img src="img/derivative_approximation1.png" width=65%></div>
+	+ 其中，***𝜖(epsilon)*** 为任意极小值，一般可以取10^(-4)，若太小会出现数值计算问题
++ Octave/MATLAB实现：
+	```
+	epsilon = 1e-4;
+	for i = 1:n,
+  		thetaPlus = theta;
+  		thetaPlus(i) += epsilon;
+  		thetaMinus = theta;
+  		thetaMinus(i) -= epsilon;
+  		gradApprox(i) = (J(thetaPlus) - J(thetaMinus))/(2*epsilon)
+	end;
+	```
++ 一旦我们计算出gradApprox，与之前计算得到的deltaVector进行比较，若 gradApprox ≈ deltaVector 则说明反向传播算法实现正确
++ 一旦验证了反向传播算法是正确的，就不需要再次计算gradApprox，因为gradApprox的计算代码运行很慢
+
+#### 实现细节：随机初始化（random initialization）
++ 不同于线性回归和逻辑回归中将参数向量初始化为零向量，在神经网络中，参数矩阵不能初始化为零矩阵，因为这会使得隐藏层的各个单元输入均为零
++ 而对参数矩阵的其他形式的初始化也不一定行得通，例如下图中的初始化方式 —— 来自同一神经元的联结参数相等（在图中使用同种颜色表示），会导致后面所有神经元在反向传播时的计算结果相同，即所有神经元计算同一函数，捕捉同一特征，使得神经网络“空有其表”，形成巨大冗余
+<div align=center><img src="img/nn_wrong_init.png" width=50%></div>
++ 因此，需要对神经网络的参数矩阵进行 **随机初始化**：将其赋值为区间[-𝜖,𝜖]中的随机数（注：此处的epsilon与梯度检查中的epsilon没有任何关系）
++ Octave/MATLAB实现：
+	```
+	% If the dimensions of Theta1 is 10x11, Theta2 is 10x11 and Theta3 is 1x11.
+	% rand(x,y) is just a function in octave that will initialize 
+	% 	a matrix of random real numbers between 0 and 1.
+	
+	Theta1 = rand(10,11) * (2 * INIT_EPSILON) - INIT_EPSILON;
+	Theta2 = rand(10,11) * (2 * INIT_EPSILON) - INIT_EPSILON;
+	Theta3 = rand(1,11) * (2 * INIT_EPSILON) - INIT_EPSILON;
+	```
+
+#### 实现小节
++ 首先，选择一个神经网络架构：共有多少层、每层有多少个神经元 ……
+	1. 输入层单元数 = 特征向量的维度
+	2. 输出层单元数 = 类别数量
+	3. 隐藏层单元数： 通常情况下越多越好，但是需要权衡随着单元数量增加导致的计算成本增加
+	4. 如果隐藏层的数量大于1，那么最好每层的神经元数量是相等的
++ 训练神经网络
+	1. 随机初始化参数（权重）
+	2. 执行前向传播，对每个特征向量计算其预测值
+	3. 计算代价函数
+	4. 执行后向传播，计算梯度/偏导数
+	5. 使用梯度检查，确保反向传播算法执行正确，然后关闭检查
+	6. 使用梯度下降算法或其他高级优化算法最小化代价函数得到参数值
